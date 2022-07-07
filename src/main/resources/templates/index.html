@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="../static/css/my.css">
 </head>
 
-<body class="dark">
+<body class="bg-light">
 <div id="app">
 
 	<!-- main wrapper -->
@@ -28,9 +28,6 @@
 			<div class="container pl-0 pr-0">
 				<div class="nav-content">
 					<ul>
-						<li class="logo d-none d-xl-block d-lg-block"><a href="#"><img src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="logo"></a></li>
-						<li><a href="#" class="active nav-content-bttn"  data-tab="chats"><i class="ti-comments"></i><br></a></li>
-						<li><a href="#" class="nav-content-bttn"  data-tab="friends"><i class="ti-user"></i></a></li>
 						<li><a href="#" class="nav-content-bttn" data-tab="favorites"><i class="ti-heart"></i></a></li>
 						<li class="flex-lg-brackets"><a href="#"  data-tab="settings" class="nav-content-bttn"><i class="ti-settings"></i></a></li>
 					</ul>
@@ -53,11 +50,7 @@
 					<div class="chat-header-action nav-content">
 						<ul class="list-inline mb-1 mt-3">
 							<li class="list-inline-item mr-3"><a href="#" @click="logout"><i class="ti-lock"></i></a></li>
-							<li class="list-inline-item">
-								<a href="#" @click="clear_notice" class="nav-content-bttn" data-tab="notification">
-									<span class="circle-icon bg-warning" v-show="notice_check"></span>
-									<i class="ti-bell"></i>
-								</a></li>
+
 						</ul>
 					</div>
 				</div>
@@ -73,26 +66,7 @@
 							</form>
 						</div>
 
-						<div class="text-left mb-2 mt-3">
-							<h2 class="title-text"><b>群聊</b></h2>
-							<form onsubmit="return false">
-								<button @click="change_create_group_panel">新建群聊</button>
-							</form>
-						</div>
-						<br><p style="color: white">我的群聊</p>
-						<ul class="chat-list">
-							<li class="chat-list-item" v-for="(group,index) in my_groups" @click="open_group_chat(index)">
-								<figure class="avatar user-online">
-									<img v-bind:src="group.url" alt="image">
-								</figure>
-								<div class="list-body">
-									<div class="chat-bttn">
-										<h3 class="mb-1 mt-1" v-text="group.name"></h3>
-										<p v-text="group.lastMessage">小克：你好</p>
-									</div>
-								</div>
-							</li>
-						</ul>
+
 					</div>
 				</div>
 
@@ -165,12 +139,7 @@
 							<li class="list-inline-item d-xl-none d-lg-none"><a href="#" @click="close_chat_window" class="bttn-box-round back-chat-div"><i class="ti-arrow-left"></i></a></li>
 							<li class="list-inline-item">
 								<a href="#" class="bttn-box-round" data-toggle="dropdown"><i class="ti-more-alt"></i></a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a href="#" @click="open_profile_window" class="dropdown-item profile-detail-bttn">好友信息</a>
-									<div class="dropdown-divider"></div>
-									<a href="#" @click="clear_message_record" class="dropdown-item text-danger">清除记录</a>
-									<a href="#" @click="delete_friend" class="dropdown-item text-danger">删除好友</a>
-								</div>
+
 							</li>
 						</ul>
 					</div>
@@ -216,20 +185,7 @@
 						</div>
 					</div>
 					<div class="chat-header-action">
-						<ul class="list-inline mb-0 mt-2">
-							<li class="list-inline-item d-xl-none d-lg-none"><a href="#" @click="close_lobby_window" class="bttn-box-round back-chat-div"><i class="ti-arrow-left"></i></a></li>
-							<li v-show="lobby_or_group" class="list-inline-item">
-								<a href="#" class="bttn-box-round" data-toggle="dropdown"><i class="ti-more-alt"></i></a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a href="#" @click="change_group_info_panel" class="dropdown-item profile-detail-bttn">查看/邀请群成员</a>
-									<a href="#" @click="update_group_info" class="dropdown-item profile-detail-bttn">修改群资料</a>
-									<div class="dropdown-divider"></div>
-									<a href="#" @click="clear_group_messages" class="dropdown-item text-danger">清除聊天记录</a>
-									<a href="#" @click="delete_group" class="dropdown-item text-danger">解散群聊</a>
-									<a href="#" @click="quit_group" class="dropdown-item text-danger">退出群聊</a>
-								</div>
-							</li>
-						</ul>
+
 					</div>
 				</div>
 				<!-- chat header -->
@@ -324,18 +280,7 @@
 			<div class="header">
 				点击好友头像 邀请好友入群
 			</div>
-			<div class="scrolling image content">
-				<div class="description">
-					<div class="ui header">模态框标题</div>
-					<p>This is an example of expanded content that will cause the modal's dimmer to scroll</p>
-					<div v-for="friend in friends">
-						<img v-bind:src="friend.url" alt="image" @click="invite_friend_into_group(friend.id)">
-						<h5 v-text="friend.nickname"></h5>
-						<div class="ui divider"></div>
-					</div>
-					<!--					<img class="ui wireframe image" src="/images/wireframe/paragraph.png">-->
-				</div>
-			</div>
+
 			<div class="actions">
 				<div class="ui primary approve button">
 					Proceed
