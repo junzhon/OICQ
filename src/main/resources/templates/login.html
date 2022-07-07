@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head th:replace="_fragment :: head(~{::title})">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>OICQ登录</title>
+	<title>登录</title>
 	<meta name="description" content="Cabe - Responsive Multi-purpose HTML5 Template">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -27,7 +27,7 @@
 				<div v-show="visit===false" class="card">
 					<div class="card-body p-5">
 						<div>
-							<h3 class="title-text mb-5"><b>OICQ登录</b></h3>
+							<h3 class="title-text mb-5"><b>登录</b></h3>
 							<div class="input-group mb-3">
 								<i class="ti-email"></i>
 			                	<input class="form-control form-control-lg" v-model="email" type="email" placeholder="邮箱">
@@ -38,30 +38,12 @@
 			                	<input class="form-control form-control-lg" @keyup.enter="login" v-model="password" type="password" placeholder="密码" required="">
 			              	</div>
 							<p style="color: red" v-text="password_msg" v-show="password_check"></p>
-			              	<a class="link-primary" th:href="@{/forgot-password}" href="forgot-password.html">忘记密码?</a><br>
-							<a class="link-primary" @click="openVisit" style="color: dodgerblue">不想注册?点击这里浅聊一下吧</a>
+
 			              	<button v-on:click="login" class="btn btn-block btn-lg btn-primary mt-2" type="button">登录</button>
-			              	<p class="mt-4 text-center">没有账户号吗? <a class="link-primary" th:href="@{/register}" href="register.html">点击这里注册</a>.</p>
 			            </div>
 					</div>
 				</div>
-				<div v-show="visit" style="display: none" class="card">
-					<div class="card-body p-5">
-						<div>
-							<h3 class="title-text mb-1"><b>选择你的的头像</b></h3>
-							<div >
-								<img v-for="index in images" v-bind:src="'/images/user-'+index+'.png'"  style="margin-right: 5px" alt="image" @click="select_profile(index)">
-							</div>
-							<h3 class="title-text mb-1"><b>取一个帅气的昵称吧</b></h3>
-							<div class="input-group mb-3">
-								<input class="form-control form-control-lg" v-model="url_name" type="text" disabled placeholder="头像">
-								<input class="form-control form-control-lg" v-model="name" type="text" placeholder="昵称">
-							</div>
-							<button @click="gotoChat" class="btn btn-block btn-lg btn-primary mt-2" type="button">进入聊天室</button>
-							<p class="mt-4 text-center"><a class="link-primary" @click="openVisit" style="color: dodgerblue">点击这里返回登录</a>.</p>
-						</div>
-					</div>
-				</div>
+
 			</div>			
 		</div>
 	</main>
@@ -95,27 +77,8 @@
 				url_name:""
 			},
 			methods: {
-				select_profile(index){
-						this.url = "/images/user-"+index+".png";
-						this.url_name = "已选择头像"+index;
-				},
-				gotoChat(){
-					if(this.url===""){
-						alert("请先选择你的头像啦！");
-						return;
-					}
-					if (this.name===""){
-						alert("你还没有取昵称哦！");
-						return;
-					}
-					if(this.name.lastIndexOf(" ")!==-1){
-						alert("昵称不允许含有空格哦！");
-						return;
-					}
-					sessionStorage.setItem("name",this.name);
-					sessionStorage.setItem("url",this.url);
-					window.location.href="/visit";
-				},
+
+
 				login(){
 					if(this.email===""){
 						this.email_check = true;
@@ -148,9 +111,7 @@
 								console.log(error);
 							})
 				},
-				openVisit(){
-					this.visit = !this.visit;
-				}
+
 			},
 			created:function () {
 				if(email1!=null){
