@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oicq.dao.GroupMsgDao">
+    <insert id="insert" parameterType="com.oicq.entity.GroupMsg">
+        insert into groupMsg(group_id,member_id,content,time)
+        values (#{group_id},#{member_id},#{content},#{time})
+    </insert>
+    <select id="getByGroupId" parameterType="java.lang.String" resultType="com.oicq.entity.GroupMsgQuery">
+        select g.id,g.group_id,g.member_id,g.content,g.time,u.nickname as member_name,u.url as member_url
+        from groupMsg g,user u
+        where g.member_id=u.id and g.group_id=#{id}
+        order by g.id asc
+    </select>
+    <delete id="deleteByGroupId" parameterType="java.lang.String">
+        delete
+        from groupMsg
+        where group_id=#{id};
+    </delete>
+</mapper>

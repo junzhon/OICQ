@@ -1,0 +1,51 @@
+/*提示框的css*/
+/* 提示语开始 */
+@-webkit-keyframes toastAnimation {
+    0% {
+        opacity:1;
+    }
+    25% {
+        opacity:0.75;
+    }
+    50% {
+        opacity:0.5;
+    }
+    75% {
+        opacity:0.25;
+    }
+    100% {
+        opacity:0;
+    }
+}
+@keyframes toastAnimation {
+    0% {
+        opacity:1;
+    }
+    25% {
+        opacity:0.75;
+    }
+    50% {
+        opacity:0.5;
+    }
+    75% {
+        opacity:0.25;
+    }
+    100% {
+        opacity:0;
+    }
+}
+.toast-message {
+    text-align:center;
+    color:#fff;
+    font-size:14px;
+    width:150px;
+    padding:10px;
+    background-color:rgba(0,0,0,0.5);
+    box-shadow:0 8px 16px 0 rgba(51,51,51,0.30);
+    border-radius:4px;
+    position:fixed;
+    z-index:9999;
+    left:50%;
+    margin-left: -75px;
+}
+/* 提示语结束 */

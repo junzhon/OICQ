@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:fragment="head(title)">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:replace="${title}">Template</title>
+    <meta name="description" content="Cabe - Responsive Multi-purpose HTML5 Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- STYLESHEETS -->
+    <link th:href="@{/css/Montserrat.css}" href="../static/css/Montserrat.css" rel="stylesheet">
+    <link th:href="@{/css/owl.carousel.min.css}" rel="stylesheet" href="../static/css/owl.carousel.min.css" type="text/css" media="all">
+    <link th:href="@{/css/owl.theme.default.min.css}" rel="stylesheet" href="../static/css/owl.theme.default.min.css" type="text/css" media="all">
+
+    <link th:href="@{/css/themify-icons.css}" rel="stylesheet" href="../static/css/themify-icons.css">
+
+    <link th:href="@{/css/main.min.css}" rel="stylesheet" href="../static/css/main.min.css" type="text/css" media="all">
+    <link th:href="@{/css/alert.css}" rel="stylesheet">
+    <link th:href="@{/css/my.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body>
+
+    <th:block th:fragment="javascript">
+        <!-- SCRIPTS -->
+        <script th:src="@{/js/plugin.js}" src="../static/js/plugin.js"></script>
+        <script th:src="@{/js/main.min.js}" src="../static/js/main.min.js"></script>
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<!--        vue和axios-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    </th:block>
+
+    <th:block th:fragment="javascript_for_index">
+        <!-- SCRIPTS -->
+
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        <!--        vue和axios-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script th:src="@{/js/vue.js}" src="../static/js/vue.js"></script>
+        <script th:src="@{/js/plugin.js}" src="../static/js/plugin.js"></script>
+        <script th:src="@{/js/my.js}" src="../static/js/my.js"></script>
+    </th:block>
+    <th:block th:fragment="javascript_for_visit">
+        <!-- SCRIPTS -->
+
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        <!--        vue和axios-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script th:src="@{/js/visit.js}" src="../static/js/visit.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script th:src="@{/js/plugin.js}" src="../static/js/plugin.js"></script>
+        <script th:src="@{/js/my.js}" src="../static/js/plugin.js"></script>
+    </th:block>
+</body>
+</html>

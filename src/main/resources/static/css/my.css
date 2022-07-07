@@ -1,0 +1,18 @@
+/*.avatar{*/
+/*    margin: 1px!important;*/
+/*}*/
+
+.imgButton{
+    float: right;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0px solid transparent;
+    outline: none;
+}
+/*消除semanticUi对这个的限制*/
+figure{
+    margin-left: 0!important;
+    margin-right: 10px!important;
+}
+

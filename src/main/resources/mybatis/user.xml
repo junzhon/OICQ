@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oicq.dao.UserDao">
+
+    <insert id="insertOne" parameterType="com.oicq.entity.User">
+        insert into user
+        (email,nickname,password,birthday,url)
+        values(#{email},#{nickname},#{password},#{birthday},#{url});
+    </insert>
+    <select id="getOneByEmail" parameterType="java.lang.String" resultType="com.oicq.entity.User">
+        select * from user where email=#{email}
+    </select>
+    <update id="updateByUser" parameterType="com.oicq.entity.User">
+        update user
+        set nickname=#{nickname},password=#{password},birthday=#{birthday},url=#{url},
+            phone=#{phone},signature=#{signature},sex=#{sex},register_time=#{register_time}
+        where id=#{id}
+    </update>
+    <select id="getOneById" parameterType="java.lang.String" resultType="com.oicq.entity.User">
+        select * from user where id=#{id}
+    </select>
+    <select id="getByKeyword" parameterType="java.lang.String" resultType="com.oicq.entity.UserSearch">
+        select id,email,nickname,url,sex,phone,signature,birthday
+        from user
+        where email like'%${keyword}%' or nickname like'%${keyword}%'
+    </select>
+
+    <select id="getOnline" parameterType="java.lang.String" resultType="com.oicq.entity.UserSearch">
+        select id,email,nickname,url,sex from user
+        where id=#{id}
+    </select>
+    <select id="getFriendList" parameterType="java.lang.String" resultType="com.oicq.entity.UserSearch">
+        select id,email,nickname,url,sex,phone,signature,birthday
+        from user
+        where id in
+              (select friend from friend where me=#{id})
+    </select>
+
+</mapper>

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "ws",
+      "type": "java.lang.String",
+      "description": "Description for ws."
+  }
+] }

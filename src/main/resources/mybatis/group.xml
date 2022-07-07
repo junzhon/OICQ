@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oicq.dao.GroupDao">
+    <insert id="insert" parameterType="com.oicq.entity.Group">
+        insert into `group`(id,name,owner_id,create_time,url)
+        values (#{id},#{name},#{owner_id},#{create_time},#{url})
+    </insert>
+    <select id="getCount" resultType="java.lang.Integer">
+        select id
+        from `groupId`;
+    </select>
+    <update id="idPlus">
+        update groupId set id=id+1;
+    </update>
+    <select id="getMyGroup" parameterType="java.lang.String" resultType="com.oicq.entity.Group">
+        select * from `group`
+        where id in(select group_id from member where member_id=#{id})
+    </select>
+    <select id="getByKeyword" parameterType="java.lang.String" resultType="com.oicq.entity.Group">
+        select * from `group`
+        where id like'%${keyword}%' or name like'%${keyword}%'
+    </select>
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from `group`
+        where id=#{id}
+    </delete>
+    <update id="updateById" parameterType="com.oicq.entity.Group">
+        update `group`
+        set name=#{name},url=#{url}
+        where id=#{id}
+    </update>
+    <insert id="initGroupId" parameterType="java.lang.Integer">
+        insert into groupId(id) values(#{id});
+    </insert>
+</mapper>

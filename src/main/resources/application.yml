@@ -1,0 +1,29 @@
+server:
+  port: 8232
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/oicq?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 233123321q
+
+  hikari:
+    idle-timeout: 60000
+    maximum-pool-size: 30 #最大连接数
+  mail:
+    host: smtp.qq.com #邮件服务器
+    username: 1704437993@qq.com
+    password: gvtvoobvljkxfabj
+    protocol: smtp
+    default-encoding: UTF-8
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+mybatis:
+  type-aliases-package: com.demo1.Entity
+  mapper-locations: classpath:/mybatis/*.xml

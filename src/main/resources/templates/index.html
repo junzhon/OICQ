@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragment :: head(~{::title})">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>首页</title>
+	<meta name="description" content="Cabe - Responsive Multi-purpose HTML5 Template">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- STYLESHEETS -->
+	<link href="../static/css/Montserrat.css" rel="stylesheet">
+	<link rel="stylesheet" href="../static/css/owl.carousel.min.css" type="text/css" media="all">
+	<link rel="stylesheet" href="../static/css/owl.theme.default.min.css" type="text/css" media="all">
+
+	<link rel="stylesheet" href="../static/css/themify-icons.css">
+
+	<link rel="stylesheet" href="../static/css/main.min.css" type="text/css" media="all">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	<link rel="stylesheet" href="../static/css/my.css">
+</head>
+
+<body class="dark">
+<div id="app">
+	<!-- add friend modal -->
+	<div class="modal fade show"  :style="{display:(add_friend_panel?'block':'none')}">
+		<div class="modal-dialog modal-md modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center">
+				<div class="modal-content pb-0">
+					<div class="modal-header add-friend">
+						<h5 class="modal-title">
+							添加新朋友
+						</h5>
+						<button type="button" class="close" data-dismiss="addfriend" aria-label="close" id="addfriend-close">
+							<a @click="close_add_friend_panel"><i class="ti-close text-white"></i></a>
+						</button>
+					</div>
+					<div class="modal-body add-friend pl-4 pr-4">
+						<form onsubmit="return false">
+							<div class="form-group text-left">
+								<label for="beizhu" class="col-form-label">备注</label>
+								<input v-model="add_msg" type="text" class="form-control" id="beizhu">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer add-friend" style="align-items: center">
+						<button type="button" class="btn btn-primary" @click="post_add_apply">发送</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- add friend modal -->
+
+	<div class="modal fade show" id="videocall" :style="{display:(invite_friend_panel?'block':'none')}">
+		<div class="modal-dialog modal-lg modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center bgi-center" style="min-height: 500px;">
+				<div>
+					<a href="#" class="live">点击头像可邀请好友入群</a>
+					<a href="#" @click="change_invite_friend_panel" class="icon-bttn bg-danger">点击这里关闭</a><br>
+					<ul style="float: left;!important;" class="chat-list">
+						<li class="chat-list-item" v-for="friend in friends" style="float: left;list-style: none">
+							<img v-bind:src="friend.url" alt="image" @click="invite_friend_into_group(friend.id)">
+							<h5 v-text="friend.nickname"></h5>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 新建群模块 -->
+	<div class="modal fade show" :style="{display:(create_group_panel?'block':'none')}">
+		<div class="modal-dialog modal-md modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center">
+				<div class="modal-content pb-0">
+					<div class="modal-header add-friend">
+						<h5 class="modal-title" v-text="create_or_update?'修改群信息':'创建新群聊'">
+						</h5>
+						<button type="button" class="close" data-dismiss="addfriend" aria-label="close" >
+							<a @click="change_create_group_panel"><i class="ti-close text-white"></i></a>
+						</button>
+					</div>
+					<div>
+						<img v-for="index in group_images" v-bind:src="'/images/group-'+index+'.png'" @click="select_group_image(index)"  style="margin-right: 5px" alt="image">
+					</div>
+					<div class="modal-body add-friend pl-4 pr-4">
+						<form onsubmit="return false">
+							<label for="groupImg">已选择群头像</label>
+							<img id="groupImg" v-bind:src="selected_group_url"  style="margin-right: 5px" alt="image">
+							<div class="form-group text-left">
+								<input v-model="creating_group_name" type="text" class="form-control" placeholder="给群聊取个名字吧" id="groupName">
+							</div>
+							<button type="button" class="btn btn-primary" @click="create_group_post" v-text="create_or_update?'确认修改':'确认创建'"></button>
+						</form>
+					</div>
+					<div class="modal-footer add-friend" style="align-items: center">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- add friend modal -->
+
+	<!-- 邀请好友入群面板 -->
+	<div class="modal fade show" :style="{display:(invite_friend_panel?'none':'none')}">
+		<div class="modal-dialog modal-md modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center">
+				<div class="modal-content pb-0">
+					<div class="modal-header add-friend">
+						<h5 class="modal-title">
+							点击好友头像 邀请好友入群
+						</h5>
+						<button type="button" class="close"  aria-label="close" >
+							<a @click="change_invite_friend_panel"><i class="ti-close text-white"></i></a>
+						</button>
+					</div>
+					<div style="float: left;!important;" class="chat-list-content">
+						<ul style="float: left;!important;" class="chat-list">
+							<li class="chat-list-item" v-for="friend in friends">
+								<figure  class="avatar user-online">
+									<img v-bind:src="friend.url" alt="image" @click="invite_friend_into_group(friend.id)">
+									<h5 v-text="friend.nickname"></h5>
+								</figure>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- add friend modal -->
+
+	<div class="modal fade show" :style="{display:(group_info_panel?'block':'none')}">
+		<div class="modal-dialog modal-lg modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center bgi-center" style="min-height: 500px;">
+				<div class="modal-header">
+					<img class="modal-title" v-bind:src="my_groups[chatting_group_index].url">
+					<h5 class="modal-title" v-text="my_groups[chatting_group_index].name+'(群人数:'+group_members.length+')'"></h5>
+					<button type="button" class="close"  aria-label="close" >
+						<a href="#" @click="change_invite_friend_panel" style="color: black">邀请好友</a>
+					</button>
+					<button type="button" class="close"  aria-label="close" >
+						<a @click="change_group_info_panel"><i class="ti-close text-black-50"></i></a>
+					</button>
+				</div>
+				<a href="#" class="live">点击头像可加好友</a>
+				<ul style="float: left;!important;" class="chat-list">
+					<li class="chat-list-item" v-for="member in group_members" style="float: left;list-style: none">
+						<img v-bind:src="member.url" alt="image" @click="show_add_friend_panel(member.id)">
+						<h5 v-text="my_groups[chatting_group_index].owner_id==member.id?member.nickname+'(群主)':member.nickname"></h5>
+						<button v-show="my_groups[chatting_group_index].owner_id==user_id" @click="tick_out(member.id)">踢出</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 群信息面板模块 -->
+	<div class="modal fade show" :style="{display:(group_info_panel?'none':'none')}">
+		<div class="modal-dialog modal-md modal-md modal-dialog-centered modal-dialog-zoom">
+			<div class="modal-content pb-0 d-flex justify-content-between text-center">
+				<div class="modal-content pb-0">
+					<div class="modal-header add-friend">
+						<img class="modal-title" v-bind:src="my_groups[chatting_group_index].url">
+						<h5 class="modal-title" v-text="my_groups[chatting_group_index].name+'(群人数:'+group_members.length+')'"></h5>
+						<button type="button" class="close"  aria-label="close" >
+							<a href="#" @click="change_invite_friend_panel" style="color: white">邀请好友</a>
+						</button>
+						<button type="button" class="close"  aria-label="close" >
+							<a @click="change_group_info_panel"><i class="ti-close text-white"></i></a>
+						</button>
+					</div>
+					<div style="float: left;!important;" class="chat-list-content">
+						<h2>点击头像可加好友</h2>
+						<ul style="float: left;!important;" class="chat-list">
+							<li class="chat-list-item" v-for="member in group_members">
+								<figure  class="avatar user-online">
+									<img v-bind:src="member.url" alt="image" @click="show_add_friend_panel(member.id)">
+									<h5 v-text="my_groups[chatting_group_index].owner_id==member.id?member.nickname+'(群主)':member.nickname"></h5>
+								</figure>
+								<form v-show="my_groups[chatting_group_index].owner_id==user_id" onsubmit="return false"><button @click="tick_out(member.id)">踢出群聊</button></form>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- add friend modal -->
+
+	<!-- main wrapper -->
+	<div class="main-wrapper">
+		<!-- navigation -->
+		<nav class="navigation">
+			<div class="container pl-0 pr-0">
+				<div class="nav-content">
+					<ul>
+						<li class="logo d-none d-xl-block d-lg-block"><a href="#"><img src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="logo"></a></li>
+						<li><a href="#" class="active nav-content-bttn"  data-tab="chats"><i class="ti-comments"></i><br></a></li>
+						<li><a href="#" class="nav-content-bttn"  data-tab="friends"><i class="ti-user"></i></a></li>
+						<li><a href="#" class="nav-content-bttn" data-tab="favorites"><i class="ti-heart"></i></a></li>
+						<li class="flex-lg-brackets"><a href="#"  data-tab="settings" class="nav-content-bttn"><i class="ti-settings"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- navigation -->
+		<div class="right-content">
+			<div class="left-sidebar">
+				<div class="chat-header">
+					<div class="chat-header-user">
+						<figure class="avatar">
+							<a href="#" @click="open_my_profile_window" class="profile-detail-bttn"><img  v-bind:src="profile_url" class="rounded-circle" alt="image"></a>
+						</figure>
+						<div>
+							<h5 class="mt-0 mb-0" v-text="my_nickname"></h5>
+							<small class="text-success" v-text="my_email"></small>
+						</div>
+					</div>
+					<div class="chat-header-action nav-content">
+						<ul class="list-inline mb-1 mt-3">
+							<li class="list-inline-item mr-3"><a href="#" @click="logout"><i class="ti-lock"></i></a></li>
+							<li class="list-inline-item">
+								<a href="#" @click="clear_notice" class="nav-content-bttn" data-tab="notification">
+									<span class="circle-icon bg-warning" v-show="notice_check"></span>
+									<i class="ti-bell"></i>
+								</a></li>
+						</ul>
+					</div>
+				</div>
+				<!--好友聊天-->
+				<br>
+				<div class="sidebar active" id="chats">
+					<div class="text-left mb-1 mt-0"><h2 class="title-text"><b>我的好友</b> </h2></div>
+					<div class="chat-list-content">
+						<div ></div>
+						<ul class="chat-list">
+							<li class="chat-list-item" v-for="(friend,index) in friends" @click="open_chat_window(index)">
+								<figure class="avatar user-online">
+									<img v-bind:src="friend.url" alt="image">
+								</figure>
+								<div class="list-body">
+									<div class="chat-bttn">
+										<h3 class="mb-0 mt-2" v-text="friend.nickname"></h3>
+										<p v-text="friend.lastChat"></p>
+									</div>
+									<div class="list-action mt-2 text-right">
+										<div v-show="friend.uncheck>0" v-text="friend.uncheck" class="message-count bg-primary">3</div>
+										<small class="text-primary" v-text="friend.lastChatTime"></small>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--添加好友-->
+				<div class="sidebar" id="friends">
+					<div class="chat-list-content">
+						<form onsubmit="return false">
+							<button v-show="friend_or_group" @click="change_friend_or_group">搜索好友</button>
+							<button v-show="friend_or_group===false" @click="change_friend_or_group">搜索群聊</button>
+						</form>
+						<div v-show="friend_or_group===false">
+							<div class="text-left mb-2 mt-3"><h2 class="title-text"><b>搜索好友</b> </h2></div>
+							<div class="form-content">
+								<form onsubmit="return false" class="mb-3 mt-1">
+									<input type="text" v-model="new_friend_keyword" class="form-control" @keyup="search_user" placeholder="根据昵称、邮箱查找用户">
+								</form>
+							</div>
+							<div class="chat-list-content">
+								<p style="color: white">搜索结果</p>
+								<ul class="chat-list">
+									<li class="chat-list-item" v-for="user in new_users">
+										<figure class="avatar user-online">
+											<img v-bind:src="user.url" alt="image">
+										</figure>
+										<div class="list-body">
+											<div class="chat-bttn">
+												<h3 class="mb-1 mt-1" v-text="user.nickname"></h3>
+												<p v-text="user.email"></p>
+											</div>
+											<div class="list-action mt-2 text-right">
+												<a href="#" class="btn-plus dropdown-toggle" @click="show_add_friend_panel(user.id)" data-toggle="dropdown"><i class="ti-plus"></i></a>
+											</div>
+										</div>
+									</li>
+								</ul>
+								<br><p style="color: white">当前在线</p>
+								<ul class="chat-list">
+									<li class="chat-list-item" v-for="user in online_users">
+										<figure class="avatar user-online">
+											<img v-bind:src="user.url" alt="image">
+										</figure>
+										<div class="list-body">
+											<div class="chat-bttn">
+												<h3 class="mb-1 mt-1" v-text="user.nickname"></h3>
+												<p v-text="user.email"></p>
+											</div>
+											<div class="list-action mt-2 text-right">
+												<a href="#" class="btn-plus dropdown-toggle" @click="show_add_friend_panel(user.id)" data-toggle="dropdown"><i class="ti-plus"></i></a>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div v-show="friend_or_group">
+							<div class="text-left mb-2 mt-3"><h2 class="title-text"><b>搜索群聊</b> </h2></div>
+							<div class="form-content">
+								<form onsubmit="return false" class="mb-3 mt-1">
+									<input type="text" v-model="new_group_keyword" class="form-control" @keyup="search_group" placeholder="根据群ID、群名查找群聊">
+								</form>
+							</div>
+							<div class="chat-list-content">
+								<p style="color: white">搜索结果</p>
+								<ul class="chat-list">
+									<li class="chat-list-item" v-for="group in group_search_result">
+										<figure class="avatar user-online">
+											<img v-bind:src="group.url" alt="image">
+										</figure>
+										<div class="list-body">
+											<div class="chat-bttn">
+												<h3 class="mb-1 mt-1" v-text="group.name"></h3>
+												<p v-text="'群ID:'+group.id"></p>
+											</div>
+											<div class="list-action mt-2 text-right">
+												<a href="#" class="btn-plus dropdown-toggle"  @click="apply_into_group(group.id)" data-toggle="dropdown"><i class="ti-plus"></i></a>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--世界大厅-->
+				<div class="sidebar" id="favorites">
+					<div class="chat-list-content">
+						<div class="text-left mb-2 mt-3"><h2 class="title-text"><b>大厅</b></h2></div>
+
+						<div class="chat-list-content">
+							<form onsubmit="return false">
+								<button @click="open_lobby_window">打开公共聊天室</button>
+							</form>
+						</div>
+
+						<div class="text-left mb-2 mt-3">
+							<h2 class="title-text"><b>群聊</b></h2>
+							<form onsubmit="return false">
+								<button @click="change_create_group_panel">新建群聊</button>
+							</form>
+						</div>
+						<br><p style="color: white">我的群聊</p>
+						<ul class="chat-list">
+							<li class="chat-list-item" v-for="(group,index) in my_groups" @click="open_group_chat(index)">
+								<figure class="avatar user-online">
+									<img v-bind:src="group.url" alt="image">
+								</figure>
+								<div class="list-body">
+									<div class="chat-bttn">
+										<h3 class="mb-1 mt-1" v-text="group.name"></h3>
+										<p v-text="group.lastMessage">小克：你好</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--系统消息-->
+				<div class="sidebar" id="notification">
+					<div class="text-left mb-2 mt-3"><h2 class="title-text"><b>系统通知</b></h2></div>
+					<div class="chat-list-content">
+						<ul class="chat-list">
+							<li class="chat-list-item" v-for="(notice,index) in notices">
+								<figure class="avatar user-online">
+									<span class="avatar-title bg-secondary rounded-circle"><i class="ti-bell"></i></span>
+								</figure>
+								<div class="list-body">
+									<div class="chat-bttn">
+										<h3 class="mb-1 mt-1" v-text="notice.type">file.txt</h3>
+										<p v-text="notice.content">What's up, how are you?</p>
+									</div>
+									<div class="list-action mt-2 text-right">
+										<small v-show="notice.type==='登录提醒'" v-text="notice.time">03:41 PM</small>
+										<button @click="delete_notice(notice.id,notice.to)" v-show="notice.type==='验证成功'||notice.type==='拒绝信息'||notice.type==='删除通知'" class="ui red button">删除</button>
+										<button @click="delete_notice(notice.id,notice.to)" v-show="notice.type==='等待验证'" class="ui red button">撤回</button>
+										<button @click="delete_notice(notice.id,notice.from)" v-show="notice.type==='好友验证'" class="ui red button">拒绝</button>
+										<button @click="agree_apply(notice.id,notice.from)" v-show="notice.type==='好友验证'" class="ui green button">同意</button>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!--个人设置-->
+				<div class="sidebar" id="settings">
+					<div class="text-left mb-2 mt-3"><h2 class="title-text"><b>账号</b> 设置 </h2></div>
+					<div class="chat-list-content mb-3 mt-3">
+						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="headingOne">
+									<h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="collapsed">主页信息<span>设置您的主页显示信息。</span></a></h4>
+								</div>
+								<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+									<div class="panel-body">
+										<form class="mb-3 mt-3">
+											<label for="name1" style="color: white">选择头像</label>
+											<div>
+												<img v-for="index in images" v-bind:src="'/images/user-'+index+'.png'"  style="margin-right: 5px" alt="image" @click="change_profile(index)">
+											</div><br>
+											<label for="name1" style="color: white">昵称</label>
+											<input v-model="nickname_edit" id="name1" type="text" style="color: white;" class="form-control mb-3" placeholder="昵称">
+											<label for="sex1" style="color: white">性别</label>
+											<input v-model="sex_edit" id="sex1" type="text" style=";color: white" class="form-control mb-3" placeholder="性别">
+											<label for="birthday1" style="color: white">生日</label>
+											<input v-model="birthday_edit" id="birthday1" type="text" class="form-control mb-3" style="color: white" placeholder="生日">
+											<label for="phone1" style="color: white">手机</label>
+											<input v-model="phone_edit" id="phone1" type="text" class="form-control mb-3" style="color: white" placeholder="手机">
+											<label for="bio" style="color: white">个性签名</label>
+											<textarea v-model="signature_edit" name="name" id="bio" cols="30" rows="4" class="mb-3" style="color: white" placeholder="个性签名"></textarea>
+											<button type="button" @click="update_my_info">保存</button>
+										</form>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="headingTwo">
+									<h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" class="collapsed">修改密码 <span>修改您的登录密码。</span></a></h4>
+								</div>
+								<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+									<div class="panel-body">
+										<form action="#" class="mb-3 mt-3">
+											<input type="text" style="color: white" v-model="old_pw" class="form-control mb-3" placeholder="旧密码">
+											<input type="text" style="color: white" v-model="new_pw" class="form-control mb-3" placeholder="新密码">
+											<button @click="change_password" type="button">保存</button>
+										</form>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div v-show="lobby_window===false" :class="{'chat-content':true,'mobile-active':chat_window}">
+				<!-- chat header -->
+				<div class="chat-header">
+					<div class="chat-header-user">
+						<figure class="avatar user-online">
+							<img v-bind:src="chatting_with===-1?profile_url:friends[chatting_with].url" class="rounded-circle" alt="image">
+						</figure>
+						<div>
+							<h5 class="mt-2 mb-0" v-text="chatting_with===-1?'':friends[chatting_with].nickname"></h5>
+						</div>
+					</div>
+					<div class="chat-header-action">
+						<ul class="list-inline mb-0 mt-2">
+							<li class="list-inline-item d-xl-none d-lg-none"><a href="#" @click="close_chat_window" class="bttn-box-round back-chat-div"><i class="ti-arrow-left"></i></a></li>
+							<li class="list-inline-item">
+								<a href="#" class="bttn-box-round" data-toggle="dropdown"><i class="ti-more-alt"></i></a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a href="#" @click="open_profile_window" class="dropdown-item profile-detail-bttn">好友信息</a>
+									<div class="dropdown-divider"></div>
+									<a href="#" @click="clear_message_record" class="dropdown-item text-danger">清除记录</a>
+									<a href="#" @click="delete_friend" class="dropdown-item text-danger">删除好友</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- chat header -->
+				<!-- chat body -->
+				<div id="chat-body" class="chat-body" style="overflow: hidden;outline: none;">
+					<div class="messages-content">
+
+						<div v-for="message in messages_show" :class="{'message-item':true,'outgoing-message':message.type==='out'}">
+							<div class="message-user" :style="{float: (message.type==='in'?'left':'none')}">
+								<div class="message-wrap" style="padding: 15px;" v-show="message.type==='out'" v-text="message.content">你好呀</div>
+								<figure class="avatar">
+									<img v-bind:src="message.type==='in'?friends[chatting_with].url:profile_url" style="margin-right: 3px" alt="image">
+								</figure>
+								<div class="message-wrap" style="padding: 15px;" v-show="message.type==='in'" v-text="message.content">你好呀</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!-- chat body -->
+				<!-- chat footer -->
+				<div class="chat-footer">
+					<form onsubmit="return false">
+						<input type="text" v-model="typing_text" @keyup.enter="send_message" placeholder="...">
+						<button type="button" @click="send_message"><img src="../static/images/send.png" th:src="@{/images/send.png}" alt="send"></button>
+					</form>
+				</div>
+				<!-- chat footer -->
+			</div>
+<!--/////////////////////////////////////////////////--><!--/////////////////////////////////////////////////--><!--/////////////////////////////////////////////////-->
+<!--			大厅-->
+			<div v-show="lobby_window" :class="{'chat-content':true,'mobile-active':lobby_window}">
+				<!-- chat header -->
+				<div class="chat-header">
+					<div class="chat-header-user">
+						<figure class="avatar user-online">
+							<img v-bind:src="lobby_or_group===false?'/images/lobby.png':my_groups[chatting_group_index].url" class="rounded-circle" alt="image">
+						</figure>
+						<div>
+							<h5 class="mt-2 mb-0" v-text="lobby_or_group===false?'公共聊天室(当前在线人数:'+lobby_number+')':my_groups[chatting_group_index].name+'(群ID:'+my_groups[chatting_group_index].id+')'"></h5>
+						</div>
+					</div>
+					<div class="chat-header-action">
+						<ul class="list-inline mb-0 mt-2">
+							<li class="list-inline-item d-xl-none d-lg-none"><a href="#" @click="close_lobby_window" class="bttn-box-round back-chat-div"><i class="ti-arrow-left"></i></a></li>
+							<li v-show="lobby_or_group" class="list-inline-item">
+								<a href="#" class="bttn-box-round" data-toggle="dropdown"><i class="ti-more-alt"></i></a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a href="#" @click="change_group_info_panel" class="dropdown-item profile-detail-bttn">查看/邀请群成员</a>
+									<a href="#" @click="update_group_info" class="dropdown-item profile-detail-bttn">修改群资料</a>
+									<div class="dropdown-divider"></div>
+									<a href="#" @click="clear_group_messages" class="dropdown-item text-danger">清除聊天记录</a>
+									<a href="#" @click="delete_group" class="dropdown-item text-danger">解散群聊</a>
+									<a href="#" @click="quit_group" class="dropdown-item text-danger">退出群聊</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- chat header -->
+				<!-- chat body -->
+				<div id="lobby-chat-body" class="chat-body" style="overflow: hidden;outline: none;">
+					<div class="messages-content">
+<!--						公共聊天室-->
+						<div v-show="lobby_or_group===false" v-for="message in lobby_messages" :class="{'message-item':true,'outgoing-message':message.type==='out'}">
+							<div class="message-user">
+								<figure class="avatar">
+									<img v-bind:src="message.url" alt="image">
+								</figure>
+								<div>
+									<h5 v-text="message.type==='out'?my_nickname:message.name"></h5>
+									<div class="time" v-text="message.time"></div>
+								</div>
+							</div>
+							<div class="message-wrap" style="padding: 15px;" v-text="message.content"></div>
+						</div><!--						公共聊天室-->
+<!--						群聊-->
+						<div v-show="lobby_or_group" v-for="message in my_groups[chatting_group_index].messages" :class="{'message-item':true,'outgoing-message':message.member_id==user_id}">
+							<div class="message-user">
+								<figure class="avatar">
+									<img v-bind:src="message.member_url" alt="image">
+								</figure>
+								<div>
+									<h5 v-text="message.member_name"></h5>
+									<div class="time" v-text="message.time"></div>
+								</div>
+							</div>
+							<div class="message-wrap" style="padding: 15px;" v-text="message.content"></div>
+						</div>
+
+					</div>
+				</div>
+				<!-- chat body -->
+				<!-- chat footer -->
+				<div class="chat-footer">
+					<form onsubmit="return false">
+						<input type="text" v-model="lobby_text_typing" @keyup.enter="send_lobby_message" placeholder="...">
+						<button type="button" @click="send_lobby_message"><img src="../static/images/send.png" th:src="@{/images/send.png}" alt="send"></button>
+					</form>
+				</div>
+				<!-- chat footer -->
+			</div>
+			<!--/////////////////////////////////////////////////--><!--/////////////////////////////////////////////////--><!--/////////////////////////////////////////////////-->
+			<div class="right-sidebar" style="overflow: hidden;outline: none;">
+				<div :class="{'profile-content':true,'scroll-profile':true,'active':profile_show}">
+					<header>
+						<h2 class="title-text" v-text="chatting_with===-1?'我的主页':friends[chatting_with].nickname+'的主页'">我的信息</h2>
+						<a href="#" @click="close_profile_window" class="close-icon float-right"><i class="ti-close  text-danger"></i></a>
+					</header>
+					<div class="text-center mt-4">
+						<figure class="avatar avatar-xl mb-4">
+							<img v-bind:src="chatting_with===-1?profile_url:friends[chatting_with].url" class="rounded-circle" alt="image">
+						</figure>
+						<h3 class="mb-0" style="color: white" v-text="chatting_with===-1?my_nickname:friends[chatting_with].nickname"></h3>
+						<small class="text-success" v-text="chatting_with===-1?my_email:friends[chatting_with].email"></small>
+
+						<ul class="profile-detail list-inline pt-5">
+							<li class="list-block-item text-left">
+								<h6 class="mb-0">性别</h6>
+								<small v-text="chatting_with===-1?my_sex:friends[chatting_with].sex">男</small>
+							</li>
+							<li class="list-block-item text-left">
+								<h6 class="mb-0">个性签名</h6>
+								<small v-text="chatting_with===-1?my_signature:friends[chatting_with].signature">最近好累哟，秋天的落叶</small>
+							</li>
+							<li class="list-block-item text-left">
+								<h6 class="mb-0">手机号码</h6>
+								<small v-text="chatting_with===-1?my_phone:friends[chatting_with].phone">+111 990 332 2223</small>
+							</li>
+							<li class="list-block-item text-left">
+								<h6 class="mb-0">出生日期</h6>
+								<small v-text="chatting_with===-1?my_birthday:friends[chatting_with].birthday">2000.02.09</small>
+							</li>
+							<li class="list-block-item text-left" v-show="chatting_with===-1">
+								<h6 class="mb-0">注册时间</h6>
+								<small v-text="register_time">2000.02.09</small>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+	<!-- main wrapper -->
+	<div class="ui dimmer modals page transition hidden" style="display: flex !important;">
+		<div class="ui longer test modal transition hidden" style="display: block !important;">
+			<div class="header">
+				点击好友头像 邀请好友入群
+			</div>
+			<div class="scrolling image content">
+				<div class="description">
+					<div class="ui header">模态框标题</div>
+					<p>This is an example of expanded content that will cause the modal's dimmer to scroll</p>
+					<div v-for="friend in friends">
+						<img v-bind:src="friend.url" alt="image" @click="invite_friend_into_group(friend.id)">
+						<h5 v-text="friend.nickname"></h5>
+						<div class="ui divider"></div>
+					</div>
+					<!--					<img class="ui wireframe image" src="/images/wireframe/paragraph.png">-->
+				</div>
+			</div>
+			<div class="actions">
+				<div class="ui primary approve button">
+					Proceed
+					<i class="right chevron icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+	
+	<!-- SCRIPTS -->
+	<!-- SCRIPTS -->
+	<th:block th:replace="_fragment :: javascript_for_index">
+		<script src="../static/js/plugin.js"></script>
+		<script src="../static/js/my.js"></script>
+		<script src="../static/js/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+		<script src="../static/js/main.min.js"></script>
+	</th:block>
+</body>
+
+</html>

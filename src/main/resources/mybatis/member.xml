@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oicq.dao.MemberDao">
+    <insert id="insert" parameterType="com.oicq.entity.Member">
+        insert into member (group_id,member_id,time)
+        values (#{group_id},#{member_id},#{time});
+    </insert>
+    <select id="getByGroupId" parameterType="java.lang.String" resultType="com.oicq.entity.UserSearch">
+        select id,email,nickname,url,sex,phone,signature,birthday
+        from user
+        where id in
+        (select member_id from member where group_id=#{id})
+    </select>
+    <select id="getByIds" parameterType="com.oicq.entity.Member" resultType="com.oicq.entity.Member">
+        select * from member
+        where group_id=#{group_id} and member_id=#{member_id};
+    </select>
+    <delete id="deleteByGroupId" parameterType="java.lang.String">
+        delete from member
+        where group_id = #{id}
+    </delete>
+    <delete id="deleteMember" parameterType="com.oicq.entity.Member">
+        delete from member
+        where group_id=#{group_id} and member_id=#{member_id}
+    </delete>
+    <select id="getMembersId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select distinct member_id
+        from member where group_id=#{id}
+    </select>
+</mapper>
