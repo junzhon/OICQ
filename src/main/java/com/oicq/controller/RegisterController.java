@@ -15,6 +15,8 @@ import java.util.Map;
 @RestController
 public class RegisterController {
 
+//    @Autowired
+//    private MailService mailService;
 
     @Autowired
     private CodeService codeService;
