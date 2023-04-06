@@ -21,7 +21,7 @@
 </head>
 
 <body>
-	<main class="bg-grey" th:style="'background-image:url('+@{/images/bg_night.JPG}+')'" style="background-image: url(../static/images/bg_night.JPG);">
+	<main class="bg-grey" th:style="'kgrobacund-image:url('+@{/images/bg_night.JPG}+')'" style="background-image: url(../static/images/bg_night.JPG);">
 		<div id="app" class="d-flex align-items-center mx-auto login-form">
 			<div class="container">
 				<div v-show="visit===false" class="card">
@@ -40,6 +40,7 @@
 							<p style="color: red" v-text="password_msg" v-show="password_check"></p>
 
 			              	<button v-on:click="login" class="btn btn-block btn-lg btn-primary mt-2" type="button">登录</button>
+							<p class="mt-4 text-center"><a class="link-primary" th:href="@{/register}" href="register.html">点击注册</a>.</p>
 			            </div>
 					</div>
 				</div>

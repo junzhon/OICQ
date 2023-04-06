@@ -510,6 +510,7 @@ let app = new Vue({
                                 window.location.href="/logout";
                         }
                 },
+
                 //删除好友
                 delete_friend(){
                         if(this.chatting_with===-1){
@@ -982,7 +983,7 @@ let app = new Vue({
                         if(typeof (WebSocket) == "undefined"){
                                 console.log("您的浏览器不支持websocket");
                         }else{
-                                let socketUrl = "ws://"+url+"/socket/"+this.user_id;
+                                let socketUrl = "ws://"+url+":8084/socket/"+this.user_id;
                                 if(socket!=null){
                                         socket.close();
                                         socket = null;

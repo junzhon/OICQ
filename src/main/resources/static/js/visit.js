@@ -122,6 +122,11 @@ let app = new Vue({
                 socket1.onopen = function () {
                     console.log("websocket1已经打开");
                 }
+                if(ws.readyState === 1){           // 当前为只判断一次，可循环判断。
+
+                    ws.send(msg);
+                    console.log("websocket1已经打开");
+                }
                 //获取消息事件.
                 socket1.onmessage = function (msg) {
                     let data = JSON.parse(msg.data);
